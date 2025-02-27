@@ -1,13 +1,11 @@
 # 🌊 Splashdown
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/yourusername/splashdown?style=social)](https://github.com/yourusername/splashdown)
+[![GitHub Stars](https://img.shields.io/github/stars/philipgyllhamn/splashdown?style=social)](https://github.com/yourusername/splashdown)
 
 > **Enhance your game streaming experience with beautiful loading screens**
 
 Splashdown is a lightweight utility designed specifically for Apollo and Sunshine game streaming environments. It displays an elegant splash screen while your game loads in the background, creating a seamless and professional streaming experience.
-
-![Splashdown Demo](https://via.placeholder.com/800x400?text=Splashdown+Demo)
 
 ## ✨ Features
 
@@ -25,7 +23,7 @@ Splashdown is a lightweight utility designed specifically for Apollo and Sunshin
 
 ## 🚀 Installation
 
-1. Download the latest release of Splashdown from the [Releases](https://github.com/yourusername/splashdown/releases) page.
+1. Download the latest release of Splashdown from the [Releases](https://github.com/philipgyllhamn/splashdown/releases) page.
 2. Extract the ZIP file to a location of your choice.
 3. No further installation required – Splashdown is portable!
 
@@ -63,7 +61,7 @@ Splashdown supports several command-line options:
 3. Splashdown monitors for the game window to appear
 4. When the game window is detected, Splashdown automatically closes
 
-## 🛠️ Troubleshooting
+<!-- ## 🛠️ Troubleshooting
 
 **Splash screen won't close:**
 - Increase the timeout value with `--timeout=X` where X is seconds
@@ -71,7 +69,7 @@ Splashdown supports several command-line options:
 
 **Game loads but splash remains:**
 - Some games use launcher processes which can confuse detection
-- Use `--process-name="ActualGame.exe"` to specify the exact process to wait for
+- Use `--process-name="ActualGame.exe"` to specify the exact process to wait for -->
 
 ## 📝 License
 
