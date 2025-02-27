@@ -11,20 +11,17 @@ Splashdown is a lightweight utility designed specifically for Apollo and Sunshin
 
 - **Seamless Integration**: Works perfectly with Apollo and Sunshine for Moonlight Game Streaming
 - **Zero Interference**: Automatically closes once your game is running
-- **Customizable**: Easy to configure with your own splash screens
 - **Lightweight**: Minimal resource usage to keep your system running smoothly
 - **Fast Startup**: Loads instantly while your game initializes in the background
 
 ## 📋 Requirements
 
 - Windows operating system
-- Apollo or Sunshine game streaming setup
-- Moonlight client
 
 ## 🚀 Installation
 
 1. Download the latest release of Splashdown from the [Releases](https://github.com/philipgyllhamn/splashdown/releases) page.
-2. Extract the ZIP file to a location of your choice.
+2. Extract the ZIP file to a location of your choice or just download the .exe directly.
 3. No further installation required – Splashdown is portable!
 
 ## 💻 Usage
@@ -33,7 +30,7 @@ Splashdown is a lightweight utility designed specifically for Apollo and Sunshin
 
 Add Splashdown as a wrapper for your game in Apollo or Sunshine:
 
-add the below parameters to "Detached Command"
+add the below parameters to "Detached Command" inside your Sunshine/Apollo dashboard for your specific application.
 
 ```
 C:\Path\To\splashdown.exe "C:\Path\To\YourGame.exe"
