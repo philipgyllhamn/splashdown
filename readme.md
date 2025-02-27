@@ -1,4 +1,4 @@
-# 🌊 Splashdown
+# 🚀☄️🌊 Splashdown
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/philipgyllhamn/splashdown?style=social)](https://github.com/yourusername/splashdown)
