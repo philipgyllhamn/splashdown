@@ -3,9 +3,9 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/philipgyllhamn/splashdown?style=social)](https://github.com/yourusername/splashdown)
 
-> **Enhance your game streaming experience with beautiful loading screens**
+> **Enhance your game streaming experience with seamless splashscreen for a professional Xcloud look**
 
-Splashdown is a lightweight utility designed specifically for Apollo and Sunshine game streaming environments. It displays an elegant splash screen while your game loads in the background, creating a seamless and professional streaming experience.
+Splashdown is a lightweight utility designed specifically for Apollo and Sunshine game streaming environments. It displays an splash screen while your game loads in the background, creating a seamless and professional streaming experience. Similar to Xbox Cloud splash screen.
 
 ## ✨ Features
 
