@@ -36,6 +36,7 @@ add the below parameters to "Detached Command" inside your Sunshine/Apollo dashb
 C:\Path\To\splashdown.exe "C:\Path\To\YourGame.exe"
 ```
 
+### *You need to check the "Run as Admin" box for it to work aswell*
 
 ## 🔍 How It Works
 
