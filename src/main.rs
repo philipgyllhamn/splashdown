@@ -12,6 +12,14 @@ use windows::Win32::System::Threading::*;
 use windows::Win32::System::LibraryLoader::GetModuleHandleW;
 use std::mem::zeroed;
 
+const WHITE : COLORREF = COLORREF(0xFFFFFF);
+const WHITESMOKE : COLORREF = COLORREF(0xF5F5F5);
+const OFF_WHITE : COLORREF = COLORREF(0xF0F0F0);
+const BLACK : COLORREF = COLORREF(0x000000);
+const RED : COLORREF = COLORREF(0xFF0000);
+const GREEN : COLORREF = COLORREF(0x00FF00);
+const BLUE : COLORREF = COLORREF(0x0000FF);
+
 // Global counter for animation
 static FRAME_COUNTER: AtomicI32 = AtomicI32::new(0);
 
@@ -84,10 +92,10 @@ impl SplashWindow {
     }
     
     // Helper function to draw a rocket
-    unsafe fn draw_rocket(mem_dc: HDC, center_x: i32, center_y: i32, frame: i32) {
+    unsafe fn draw_rocket(mem_dc: CreatedHDC, center_x: i32, center_y: i32, frame: i32) {
         // Create pens and brushes
-        let rocket_pen = CreatePen(PS_SOLID, 2, COLORREF(0xFFFFFF)); // White pen for outlines
-        let rocket_brush = CreateSolidBrush(COLORREF(0xCCCCCC)); // Light gray for rocket body
+        let rocket_pen = CreatePen(PS_SOLID, 2, BLACK); // White pen for outlines
+        let rocket_brush = CreateSolidBrush(BLACK); // Light gray for rocket body
         let flame_brush1 = CreateSolidBrush(COLORREF(0x0066FF)); // Blue flame
         let flame_brush2 = CreateSolidBrush(COLORREF(0xFF6600)); // Orange flame
         
@@ -207,7 +215,7 @@ impl SplashWindow {
         
         // Draw "Launching your game" text
         let text = "Launching your game\0".encode_utf16().collect::<Vec<u16>>();
-        SetTextColor(mem_dc, COLORREF(0xFFFFFF)); // White text
+        SetTextColor(mem_dc, BLACK); // White text
         
         // Set text properties - just use larger text
         SetBkMode(mem_dc, TRANSPARENT);
@@ -239,8 +247,8 @@ impl SplashWindow {
                 let mem_bmp = CreateCompatibleBitmap(hdc, rect.right, rect.bottom);
                 let old_bmp = SelectObject(mem_dc, mem_bmp);
                 
-                // Fill background with dark color (dark blue with a hint of purple)
-                let brush = CreateSolidBrush(COLORREF(0x221133)); // Dark blue/purple
+                // Fill background with white
+                let brush = CreateSolidBrush(WHITE);
                 FillRect(mem_dc, &rect, brush);
                 DeleteObject(brush);
                 
@@ -249,8 +257,8 @@ impl SplashWindow {
                 let center_y = rect.bottom / 2;
                 let frame = FRAME_COUNTER.load(Ordering::SeqCst);
                 
-                // Convert mem_dc to HDC since our draw_rocket function expects HDC
-                Self::draw_rocket(hdc, center_x, center_y, frame);
+                // Change this line to use mem_dc instead of hdc
+                Self::draw_rocket(mem_dc, center_x, center_y, frame);
                 
                 // Copy from memory DC to window DC
                 BitBlt(hdc, 0, 0, rect.right, rect.bottom, mem_dc, 0, 0, SRCCOPY);
@@ -317,12 +325,12 @@ fn main() -> Result<(), String> {
     let start_time = Instant::now();
     
     // Keep showing the splash screen for at least 2 seconds
-    let min_display_time = Duration::from_secs(2);
+    let min_display_time = Duration::from_secs(4);
     
     // Main loop - show the splash window for the minimum time
     let mut running = true;
     
-    println!("Showing splash screen for at least 2 seconds...");
+    println!("Showing splash screen for at least 4 seconds...");
     
     while running {
         // Process Windows messages
