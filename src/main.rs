@@ -83,6 +83,147 @@ impl SplashWindow {
         }
     }
     
+    // Helper function to draw a rocket
+    unsafe fn draw_rocket(mem_dc: HDC, center_x: i32, center_y: i32, frame: i32) {
+        // Create pens and brushes
+        let rocket_pen = CreatePen(PS_SOLID, 2, COLORREF(0xFFFFFF)); // White pen for outlines
+        let rocket_brush = CreateSolidBrush(COLORREF(0xCCCCCC)); // Light gray for rocket body
+        let flame_brush1 = CreateSolidBrush(COLORREF(0x0066FF)); // Blue flame
+        let flame_brush2 = CreateSolidBrush(COLORREF(0xFF6600)); // Orange flame
+        
+        // Select pen and set background mode to transparent
+        let old_pen = SelectObject(mem_dc, rocket_pen);
+        SetBkMode(mem_dc, TRANSPARENT);
+        
+        // Calculate rocket dimensions
+        let rocket_width = 30;
+        let rocket_height = 80;
+        let nose_height = 30;
+        let fin_width = 15;
+        let fin_height = 20;
+        
+        // Small vertical offset based on frame to give slight hovering effect
+        let offset_y = (frame as f64 * 0.1).sin() as i32 * 2;
+        
+        // Draw the rocket body (rectangle)
+        let body_top = center_y - rocket_height / 2 + nose_height / 2 + offset_y;
+        let body_bottom = center_y + rocket_height / 2 + offset_y;
+        let body_left = center_x - rocket_width / 2;
+        let body_right = center_x + rocket_width / 2;
+        
+        SelectObject(mem_dc, rocket_brush);
+        Rectangle(mem_dc, body_left, body_top, body_right, body_bottom);
+        
+        // Draw the nose cone (triangle)
+        let nose_top = body_top - nose_height;
+        let nose_left = body_left;
+        let nose_right = body_right;
+        
+        let nose_points = [
+            POINT { x: center_x, y: nose_top },
+            POINT { x: nose_right, y: body_top },
+            POINT { x: nose_left, y: body_top },
+        ];
+        
+        Polygon(mem_dc, &nose_points);
+        
+        // Draw the left fin
+        let fin_points_left = [
+            POINT { x: body_left, y: body_bottom - fin_height },
+            POINT { x: body_left - fin_width, y: body_bottom },
+            POINT { x: body_left, y: body_bottom },
+        ];
+        
+        Polygon(mem_dc, &fin_points_left);
+        
+        // Draw the right fin
+        let fin_points_right = [
+            POINT { x: body_right, y: body_bottom - fin_height },
+            POINT { x: body_right + fin_width, y: body_bottom },
+            POINT { x: body_right, y: body_bottom },
+        ];
+        
+        Polygon(mem_dc, &fin_points_right);
+        
+        // Draw window on rocket (circle)
+        let window_size = 12;
+        let window_y = center_y - 10 + offset_y;
+        Ellipse(mem_dc, 
+            center_x - window_size / 2, 
+            window_y - window_size / 2, 
+            center_x + window_size / 2, 
+            window_y + window_size / 2
+        );
+        
+        // Draw flame at bottom of rocket (animated)
+        let flame_phase = (frame / 5) % 4; // 0, 1, 2, or 3
+        
+        let flame_width_base = 20;
+        let flame_height_base = 25;
+        // Adjust flame size based on phase
+        let flame_width = flame_width_base + flame_phase * 2;
+        let flame_height = flame_height_base + flame_phase * 3;
+        
+        // Alternate between flame colors
+        if flame_phase % 2 == 0 {
+            SelectObject(mem_dc, flame_brush1);
+        } else {
+            SelectObject(mem_dc, flame_brush2);
+        }
+        
+        let flame_points = [
+            POINT { x: center_x - flame_width / 2, y: body_bottom },
+            POINT { x: center_x, y: body_bottom + flame_height },
+            POINT { x: center_x + flame_width / 2, y: body_bottom },
+        ];
+        
+        Polygon(mem_dc, &flame_points);
+        
+        // Draw motion lines around the rocket
+        let line_count = 12;
+        let max_line_length = 25;
+        
+        for i in 0..line_count {
+            let angle = (i as f64 * 2.0 * std::f64::consts::PI / line_count as f64) + std::f64::consts::PI/4.0;
+            // Only draw lines in the bottom 240 degrees to give upward motion effect
+            if angle > std::f64::consts::PI / 6.0 && angle < 11.0 * std::f64::consts::PI / 6.0 {
+                // Animate line length based on frame
+                let phase = (frame + i * 5) % 15;
+                let line_length = if phase < 10 { max_line_length * phase / 10 } else { max_line_length * (15 - phase) / 5 };
+                
+                // Starting point near the rocket
+                let start_dist = rocket_width * 3 / 4 + 10;
+                let start_x = center_x + (start_dist as f64 * angle.cos()) as i32;
+                let start_y = center_y + (start_dist as f64 * angle.sin()) as i32;
+                
+                // Ending point
+                let end_x = start_x + (line_length as f64 * angle.cos()) as i32;
+                let end_y = start_y + (line_length as f64 * angle.sin()) as i32;
+                
+                MoveToEx(mem_dc, start_x, start_y, None);
+                LineTo(mem_dc, end_x, end_y);
+            }
+        }
+        
+        // Draw "Launching your game" text
+        let text = "Launching your game\0".encode_utf16().collect::<Vec<u16>>();
+        SetTextColor(mem_dc, COLORREF(0xFFFFFF)); // White text
+        
+        // Set text properties - just use larger text
+        SetBkMode(mem_dc, TRANSPARENT);
+        let text_y = center_y + rocket_height / 2 + 50 + offset_y;
+        
+        // Draw text without custom font
+        TextOutW(mem_dc, center_x - 70, text_y, &text[..text.len()-1]);
+        
+        // Clean up
+        SelectObject(mem_dc, old_pen);
+        DeleteObject(rocket_pen);
+        DeleteObject(rocket_brush);
+        DeleteObject(flame_brush1);
+        DeleteObject(flame_brush2);
+    }
+    
     unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
         match msg {
             WM_PAINT => {
@@ -98,44 +239,18 @@ impl SplashWindow {
                 let mem_bmp = CreateCompatibleBitmap(hdc, rect.right, rect.bottom);
                 let old_bmp = SelectObject(mem_dc, mem_bmp);
                 
-                // Fill background with dark color
-                let brush = CreateSolidBrush(COLORREF(0x00280A)); // Dark blue
+                // Fill background with dark color (dark blue with a hint of purple)
+                let brush = CreateSolidBrush(COLORREF(0x221133)); // Dark blue/purple
                 FillRect(mem_dc, &rect, brush);
                 DeleteObject(brush);
                 
-                // Draw a simple loading animation
+                // Draw the rocket animation
                 let center_x = rect.right / 2;
                 let center_y = rect.bottom / 2;
-                
-                // Get current frame counter
                 let frame = FRAME_COUNTER.load(Ordering::SeqCst);
                 
-                // Create white brush for dots
-                let white_brush = CreateSolidBrush(COLORREF(0xFFFFFF)); // White
-                
-                // Draw spinning dots
-                for i in 0..8 {
-                    let angle = ((frame as f64) * 0.05) + (i as f64 * std::f64::consts::PI / 4.0);
-                    let distance = 50.0;
-                    let x = center_x + (distance * angle.cos()) as i32;
-                    let y = center_y + (distance * angle.sin()) as i32;
-                    
-                    // Determine dot size based on position
-                    let dot_size = if i == (frame / 10) as usize % 8 { 8 } else { 4 };
-                    
-                    // Create a rect for each dot
-                    let dot_rect = RECT {
-                        left: x - dot_size,
-                        top: y - dot_size,
-                        right: x + dot_size,
-                        bottom: y + dot_size,
-                    };
-                    
-                    // Fill the dot
-                    FillRect(mem_dc, &dot_rect, white_brush);
-                }
-                
-                DeleteObject(white_brush);
+                // Convert mem_dc to HDC since our draw_rocket function expects HDC
+                Self::draw_rocket(hdc, center_x, center_y, frame);
                 
                 // Copy from memory DC to window DC
                 BitBlt(hdc, 0, 0, rect.right, rect.bottom, mem_dc, 0, 0, SRCCOPY);
