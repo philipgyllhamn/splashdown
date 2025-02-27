@@ -33,26 +33,12 @@ Splashdown is a lightweight utility designed specifically for Apollo and Sunshin
 
 Add Splashdown as a wrapper for your game in Apollo or Sunshine:
 
-```
-"C:\Path\To\Splashdown.exe" "C:\Path\To\YourGame.exe" [game parameters]
-```
-
-### Configuration Options
-
-Splashdown supports several command-line options:
-
-| Option | Description | Example |
-|--------|-------------|---------|
-| `--splash-image` | Path to custom splash image | `--splash-image="C:\path\to\image.png"` |
-| `--timeout` | Maximum time to wait (seconds) | `--timeout=120` |
-| `--fullscreen` | Launch splash in fullscreen mode | `--fullscreen` |
-| `--position` | Screen position (center, top, bottom) | `--position=center` |
-
-### Example Configuration
+add the below parameters to "Detached Command"
 
 ```
-"C:\Games\Splashdown\Splashdown.exe" --splash-image="C:\Splashes\MyGame.png" --fullscreen "C:\Games\Epic\MyGame.exe" -epicarg1 -epicarg2
+C:\Path\To\splashdown.exe "C:\Path\To\YourGame.exe"
 ```
+
 
 ## 🔍 How It Works
 
